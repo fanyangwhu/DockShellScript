@@ -18,10 +18,11 @@ csplit -ftmp -ksz -n ${#mol_num} $1 %Name:% /Name:/ {*}
 #传入文件名为目标文件
 
 #2.修改文件名tmpxxxx为zinc编号，其中同一编号以后缀_n区分
-echo "重命名中，并为同一ZINC编号多个结构文件名添加数字后缀……"
+echo "重命名中，并为重名文件添加数字后缀……"
 for file in tmp*
 do
-	zid=`head $file | grep Name: | awk '{print $3}'`
+	zid=`grep Name $file | awk '{print $3}'` 
+	#zid=`head $file | grep Name: | awk '{print $3}'`
 	if [[ -e "$zid".mol2 ]]; then
 		for n in `seq 1 9`; do
 			if [[ ! -e "$zid"_"$n".mol2 ]]; then
@@ -42,7 +43,8 @@ echo "创建同名文件夹……"
 dname=`echo $1 | awk -F . '{print $1}'`
 mkdir $dname
 
-mv ZINC* ./$dname/
+mv *mol2 ./$dname/
+mv ./$dname/$1 ./
 echo "完成！拆分文件已放入$dname 文件夹，请查看！"
 
 
